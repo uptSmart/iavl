@@ -8,7 +8,7 @@ import (
 	"sort"
 	"testing"
 
-	db "github.com/cosmos/cosmos-db"
+	db "github.com/cometbft/cometbft-db"
 	iavlrand "github.com/cosmos/iavl/internal/rand"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -341,7 +341,7 @@ func TestIntegration(t *testing.T) {
 	}
 
 	for i, x := range records {
-		if val, removed, err := tree.Remove([]byte(x.key)); err != nil { //nolint:gocritic
+		if val, removed, err := tree.Remove([]byte(x.key)); err != nil {
 			require.NoError(t, err)
 		} else if !removed {
 			t.Error("Wasn't removed")
