@@ -467,19 +467,10 @@ func (tree *MutableTree) Load() (int64, error) {
 // performs a no-op. Otherwise, if the root does not exist, an error will be
 // returned.
 func (tree *MutableTree) LazyLoadVersion(targetVersion int64) (int64, error) {
-	firstVersion, err := tree.ndb.getFirstVersion()
-	if err != nil {
-		return 0, err
-	}
 
 	latestVersion, err := tree.ndb.getLatestVersion()
 	if err != nil {
 		return 0, err
-	}
-
-	if firstVersion > 0 && firstVersion < int64(tree.ndb.opts.InitialVersion) {
-		return latestVersion, fmt.Errorf("initial version set to %v, but found earlier version %v",
-			tree.ndb.opts.InitialVersion, firstVersion)
 	}
 
 	if latestVersion < targetVersion {
@@ -587,11 +578,6 @@ func (tree *MutableTree) LoadVersion(targetVersion int64) (int64, error) {
 	if !(targetVersion == 0 || latestVersion == targetVersion) {
 		return latestVersion, fmt.Errorf("wanted to load target %v but only found up to %v",
 			targetVersion, latestVersion)
-	}
-
-	if firstVersion > 0 && firstVersion < int64(tree.ndb.opts.InitialVersion) {
-		return latestVersion, fmt.Errorf("initial version set to %v, but found earlier version %v",
-			tree.ndb.opts.InitialVersion, firstVersion)
 	}
 
 	t := &ImmutableTree{
